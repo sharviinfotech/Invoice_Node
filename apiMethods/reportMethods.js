@@ -1,6 +1,6 @@
 const axios = require('axios');
 const { User, Approval, Counter, invoice, countries, statee, layout, invoiceproformaCount,
-    invoicetaxCount, userCreation, customerCreation, customerCount } = require('../models/userCreationModel');
+    invoicetaxCount, userCreation, customerCreation, customerCount,chargesCreation,chargesCount } = require('../models/userCreationModel');
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
 const moment = require('moment');
@@ -1220,14 +1220,77 @@ module.exports = (() => {
             }
             catch (error) {
                 res.status(500).json({
-                    message: "server error"
+                    message:"500 Internal Server Error",
+                    status:500
                 })
             }
 
-        }
+        },
 
+        chargesSubmit: async(req,res)=>{
 
+            try{
+               console.log("req.body",req.body)
+                const { chargesName } = req.body;
 
+                const counter = await chargesCount.findOneAndUpdate(
+                    { name: "chargesUniqueId" },
+                    { $inc: { value: 1 } },
+                    { new: true, upsert: true, setDefaultsOnInsert: true }
+                );
+                const chargesUniqueId = counter.value;
+                console.log("chargesUniqueId", chargesUniqueId);
+                const chargesPayload = new chargesCreation({
+                    chargesName,
+                    chargesUniqueId
+                    
+                })
+                console.log("chargesPayload", chargesPayload);
+                const NewchargesList = await chargesPayload.save()
+                console.log("NewchargesList", NewchargesList);
+                res.status(200).json({
+                    message: "New Charges Created Successfully",
+                    status: 200,
+                    data: NewchargesList,
+                    chargesUniqueId
+                })
+
+            }catch(error){
+                res.status(500).json({
+                    message:"500 Internal Server Error",
+                    status:500
+                })
+
+            }
+        },
+        listOfCharges: async (req, res) => {
+            try {
+                console.log("chargesCreation",chargesCreation)
+                const chargesData = await chargesCreation.find()
+              console.log("chargesData",chargesData)
+                if (!chargesData || chargesData.length === 0) {
+                    return res.status(200).json({
+                        message: "No Data Available",
+                        data: [],
+                        status: 200
+                    })
+
+                }
+
+                res.status(200).json({
+                    message: "Charges Data Fetched Successfully",
+                    data: chargesData,
+                    status: 200
+                })
+
+            } catch (error) {
+                res.status(500).json({
+                    message: "Failed to Fetch Cstomers Data"
+                })
+
+            }
+
+        },
 
 
 

@@ -24,7 +24,9 @@ module.exports = (() => {
         customerUpdate:(req,res)=>userMethods.updateCustomer(req,res),
         getAllCustomer:(req,res)=>userMethods.listOfCustomers(req,res),
         forgot:(req,res)=>userMethods.forgotPassword(req,res),
-        approveOrRejectMail: (req, res) => userMethods.approvedOrRejectedMail(req, res)
+        approveOrRejectMail: (req, res) => userMethods.approvedOrRejectedMail(req, res),
+        chargesCreation:(req,res)=>userMethods.chargesSubmit(req,res),
+        chargesList:(req,res)=>userMethods.listOfCharges(req,res)
 
     };
 })();

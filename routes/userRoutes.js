@@ -28,6 +28,8 @@ module.exports = (() => {
     router.get('/invoice/getAllCustomerList',userHandler.getAllCustomer);
     router.post('/invoice/forgotPassword',userHandler.forgot);
     router.get('/invoice/approveorrejectMail', userHandler.approveOrRejectMail);
+    router.get('/invoice/getAllCharges',userHandler.chargesList);
+
     
     console.log('enter route')
     // router.post('/', userHandler.createUser);

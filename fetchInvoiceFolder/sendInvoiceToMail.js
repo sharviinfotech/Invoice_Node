@@ -150,12 +150,12 @@ const sendInvoiceDataToEmail = async (toEmail, postTotalInvoiceList) => {
                     <td>${data.grandTotal || 'N/A'}</td>
                     <td>
     <div style="display: flex; justify-content: center; gap: 10px;">
-        <a href="http://localhost:3000/api/invoice/approveorrejectMail?invoiceReferenceNo=${data.invoiceReferenceNo}&status=Approved&reason=approvedFromMail&invoiceApprovedOrRejectedByUser=MD&invoiceUniqueNumber=${data.invoiceUniqueNumber}" 
+        <a href="http://localhost:3000/api/invoice/approveorrejectMail?originalUniqueId=${data.originalUniqueId}&status=Approved&reason=approvedFromMail&invoiceApprovedOrRejectedByUser=MD&invoiceUniqueNumber=${data.invoiceUniqueNumber}" 
            style="background-color: green; color: white; padding: 5px 10px; text-decoration: none; border-radius: 5px; text-align: center;">
            Approve
         </a>
 
-        <a href="http://localhost:3000/api/invoice/approveorrejectMail?invoiceReferenceNo=${data.invoiceReferenceNo}&status=Rejected&reason=rejectedFromMail&invoiceApprovedOrRejectedByUser=MD&invoiceUniqueNumber=${data.invoiceUniqueNumber}" 
+        <a href="http://localhost:3000/api/invoice/approveorrejectMail?originalUniqueId=${data.originalUniqueId}&status=Rejected&reason=rejectedFromMail&invoiceApprovedOrRejectedByUser=MD&invoiceUniqueNumber=${data.invoiceUniqueNumber}" 
            style="background-color: red; color: white; padding: 5px 10px; text-decoration: none; border-radius: 5px; text-align: center;">
            Reject
         </a>
@@ -174,15 +174,15 @@ const sendInvoiceDataToEmail = async (toEmail, postTotalInvoiceList) => {
             console.log("Click event detected");
 
             if (event.target.classList.contains('approve-btn')) {
-                const invoiceReferenceNo = event.target.getAttribute('data-invoice-reference');
-                console.log('Approve button clicked for invoiceReferenceNo:', invoiceReferenceNo);
-                approveInvoice(invoiceReferenceNo);
+                const originalUniqueId = event.target.getAttribute('data-invoice-reference');
+                console.log('Approve button clicked for originalUniqueId:', originalUniqueId);
+                approveInvoice(originalUniqueId);
             }
 
             if (event.target.classList.contains('reject-btn')) {
-                const invoiceReferenceNo = event.target.getAttribute('data-invoice-reference');
-                console.log('Reject button clicked for invoiceReferenceNo:', invoiceReferenceNo);
-                rejectInvoice(invoiceReferenceNo);
+                const originalUniqueId = event.target.getAttribute('data-invoice-reference');
+                console.log('Reject button clicked for originalUniqueId:', originalUniqueId);
+                rejectInvoice(originalUniqueId);
             }
         });
     } else {
@@ -229,11 +229,11 @@ const sendInvoiceDataToEmail = async (toEmail, postTotalInvoiceList) => {
 }
 
 // Assuming you have approveInvoice and rejectInvoice functions defined somewhere
-const approveInvoice = async (invoiceReferenceNo) => {
-    console.log('Invoice approved for reference:', invoiceReferenceNo);
+const approveInvoice = async (originalUniqueId) => {
+    console.log('Invoice approved for reference:', originalUniqueId);
 
     const requestBody = {
-        invoiceReferenceNo: invoiceReferenceNo,
+        originalUniqueId: originalUniqueId,
         status: "Approved",
         reason: "ApprrovedFromMail",
         invoiceApprovedOrRejectedByUser: "MD"
@@ -257,11 +257,11 @@ const approveInvoice = async (invoiceReferenceNo) => {
     }
 };
 
-const rejectInvoice = async (invoiceReferenceNo) => {
-    console.log('Invoice rejected for reference:', invoiceReferenceNo);
+const rejectInvoice = async (originalUniqueId) => {
+    console.log('Invoice rejected for reference:', originalUniqueId);
 
     const requestBody = {
-        invoiceReferenceNo: invoiceReferenceNo,
+        originalUniqueId: originalUniqueId,
         status: "Rejected",
         reason: "RejectedFromMail",
         invoiceApprovedOrRejectedByUser: "MD"

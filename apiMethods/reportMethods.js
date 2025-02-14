@@ -401,7 +401,7 @@ module.exports = (() => {
                 }
 
                 const updatedInvoice = await invoice.findOneAndUpdate(
-                    { invoiceReferenceNo: referenceNo }, // Find invoice by reference number
+                    { originalUniqueId: referenceNo }, // Find invoice by reference number
                     { $set: updateData }, // Apply updates
                     { new: true, runValidators: true }
                 );
@@ -943,15 +943,15 @@ module.exports = (() => {
         approvedOrRejected: async (req, res) => {
             console.log("req.body", req.body)
             try {
-                const { invoiceReferenceNo, status, reason, invoiceApprovedOrRejectedByUser, invoiceApprovedOrRejectedDateAndTime } = req.body; // Extract only required fields
+                const { originalUniqueId, status, reason, invoiceApprovedOrRejectedByUser, invoiceApprovedOrRejectedDateAndTime } = req.body; // Extract only required fields
 
-                if (!invoiceReferenceNo || !status) {
+                if (!originalUniqueId || !status) {
                     return res.status(400).json({ message: "userUniqueId and status are required", status: 400 });
                 }
 
                 // Find and update the user with new status and remarkReason
                 const updatedUser = await invoice.findOneAndUpdate(
-                    { invoiceReferenceNo }, // Search by userUniqueId
+                    { originalUniqueId }, // Search by userUniqueId
                     {
                         $set: { status, reason, invoiceApprovedOrRejectedByUser, invoiceApprovedOrRejectedDateAndTime } // Update or add status & remarkReason
                     },
@@ -972,9 +972,9 @@ module.exports = (() => {
         approvedOrRejectedMail: async (req, res) => {
             try {
                 console.log("req.query",req.query)
-                const { invoiceReferenceNo, status, reason, invoiceApprovedOrRejectedByUser, invoiceUniqueNumber } = req.query;
+                const { originalUniqueId, status, reason, invoiceApprovedOrRejectedByUser, invoiceUniqueNumber } = req.query;
 
-                if (!invoiceReferenceNo || !status) {
+                if (!originalUniqueId || !status) {
                     return res.send(`
                         <script>
                             var newWindow = window.open("", "_blank", "width=400,height=200");
@@ -998,7 +998,7 @@ module.exports = (() => {
 
                 // Find and update the invoice
                 const updatedInvoice = await invoice.findOneAndUpdate(
-                    { invoiceReferenceNo },
+                    { originalUniqueId },
                     { $set: { status, reason, invoiceApprovedOrRejectedByUser,invoiceApprovedOrRejectedDateAndTime } },
                     { new: true, runValidators: true }
                 );

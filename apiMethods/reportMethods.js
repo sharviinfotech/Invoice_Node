@@ -155,7 +155,7 @@ module.exports = (() => {
                 //     toPan,invoiceNumber,invoiceDate,panNumber,gstinNo,typeOfAircraft,notes } = req.body
 
                 const { header, chargesList, taxList, subtotal, grandTotal, amountInWords, reason, invoiceApprovedOrRejectedByUser,
-                    invoiceApprovedOrRejectedDateAndTime, loggedInUser, status,proformaCardHeaderId,proformaCardHeaderName
+                    invoiceApprovedOrRejectedDateAndTime, loggedInUser, status,proformaCardHeaderId,proformaCardHeaderName,reviewedDescription,reviewedDate,reviewedLoggedIn
 
                 } = req.body
                 console.info("req.body", req.body)
@@ -297,7 +297,10 @@ module.exports = (() => {
                         invoiceApprovedOrRejectedDateAndTime,
                         loggedInUser,
                         proformaCardHeaderId,
-                        proformaCardHeaderName
+                        proformaCardHeaderName,
+                        reviewedDescription,
+                        reviewedDate,
+                        reviewedLoggedIn
                     }
 
                 );
@@ -1038,7 +1041,34 @@ module.exports = (() => {
                 `);
             }
         },
+        reviewedInvoice: async (req, res) => {
+            console.log("req.body", req.body);
+            try {
+                const { originalUniqueId, reviewedDescription, reviewedDate, reviewedLoggedIn} = req.body; // Extract only required fields
 
+                if (!originalUniqueId) {
+                    return res.status(400).json({ message: "userUniqueId and status are required", status: 400 });
+                }
+
+                // Find and update the user with new status and remarkReason
+                const updatedUser = await invoice.findOneAndUpdate(
+                    { originalUniqueId }, // Search by userUniqueId
+                    {
+                        $set: { reviewedDescription, reviewedDate, reviewedLoggedIn } // Update or add status & remarkReason
+                    },
+                    { new: true, runValidators: true } // Return updated document
+                );
+
+                if (!updatedUser) {
+                    return res.status(404).json({ message: "User Not Found", status: 404 });
+                }
+
+                res.status(200).json({ message: "Description saved Successfully", data: updatedUser, status: 200 });
+
+            } catch (error) {
+                res.status(500).json({ message: "Description saved Failed", status: 500, error: error.message });
+            }
+        },
 
 
 

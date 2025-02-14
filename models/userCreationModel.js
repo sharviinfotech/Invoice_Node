@@ -363,7 +363,22 @@ const invoiceSchema = new mongoose.Schema({
     proformaCardHeaderName:{
         type:String,
         required:true
+    },
+    reviewedDescription:{
+        type:String,
+        required:false
+    },
+    reviewedDate:{
+        type:String,
+        required:false
+    },
+    reviewedLoggedIn:{
+        type:String,
+        required:false
     }
+            
+            
+            
 
     // bankDetails:{
     //     accountName:{

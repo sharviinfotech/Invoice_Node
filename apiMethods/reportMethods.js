@@ -1,6 +1,6 @@
 const axios = require('axios');
 const { User, Approval, Counter, invoice, countries, statee, layout, invoiceproformaCount,
-    invoicetaxCount, userCreation, customerCreation, customerCount,chargesCreation,chargesCount } = require('../models/userCreationModel');
+    invoicetaxCount,uniqueId, userCreation, customerCreation, customerCount,chargesCreation,chargesCount } = require('../models/userCreationModel');
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
 const moment = require('moment');
@@ -164,10 +164,10 @@ module.exports = (() => {
                var  invoiceDateObj;
                var  bookingDate;
                var  invoiceReferenceNo;
-                if (proformaCardHeaderId === "PQ") {
-                    
-                    
+               let originalUniqueId; // To store the numerical part
 
+                if (proformaCardHeaderId === "PQ") {
+                
                 // Check and initialize the counter if not already created
                 const counter = await invoiceproformaCount.findOneAndUpdate(
                     { name: "invoiceUniqueNumber" },  // Find condition
@@ -240,6 +240,13 @@ module.exports = (() => {
                 console.log("start", start, invoiceUniqueNumber)
                 } 
 
+                // Get and increment the SINGLE counter
+        const originalId = await uniqueId.findOneAndUpdate(
+            { name: "originalUniqueId" }, // Always find the same counter document
+            { $inc: { value: 1 } },
+            { new: true, upsert: true, setDefaultsOnInsert: true }
+        );
+                originalUniqueId = originalId.value; // Store the number
                 console.log("invoiceUniqueNumber end",invoiceUniqueNumber)
                 
                 const headerObj = {
@@ -274,6 +281,7 @@ module.exports = (() => {
                 // let status = "Pending"
                 const newInvoice = new invoice(
                     {
+                        originalUniqueId: originalUniqueId,
                         header: headerObj,
                         chargesList,
                         taxList,

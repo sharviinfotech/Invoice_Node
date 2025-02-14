@@ -145,8 +145,8 @@ const counterSchema = new mongoose.Schema({
 const invoiceProformaInvoiceSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: false,
-        unique: true,
+        required: true,
+        // unique: true,
     },
  
     value: {
@@ -162,8 +162,8 @@ const invoiceProformaInvoiceSchema = new mongoose.Schema({
 const invoiceTaxInvoiceCountSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: false,
-        unique: true,
+        required: true,
+        // unique: true,
     },
  
     value: {
@@ -209,13 +209,32 @@ const taxSchema=new mongoose.Schema({
         required: false,
     },
 })
+const invoiceOriginalUniqueIdSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+        unique: true, // Ensure only one counter document exists
+        default: "originalUniqueId", // Set a default name
+    },
+    value: {
+        type: Number,
+        default: 0, // Start from 0 or your desired starting number
+    },
+    // No startWith needed as we are using a single counter.
+});
 // Invoice schema
 const invoiceSchema = new mongoose.Schema({
   
-    invoiceReferenceNo: {
-        type: Number, // Ensure it's a number
+       // ... other fields
+       originalUniqueId: {
+        type: Number,
         required: true,
-        unique: true, // Ensures uniqueness
+        unique: true, // Unique across ALL invoices
+    },
+    invoiceUniqueNumber: {
+        type: String,
+        required: true,
+        unique: true,
     },
     header:{
             
@@ -680,6 +699,7 @@ const statee = mongoose.model('statee', stateListSchema);
 const layout = mongoose.model('InvoiceLayout',invoiceLayoutSchema);
 const invoiceproformaCount= mongoose.model('invoiceProformaCount',invoiceProformaInvoiceSchema)
 const invoicetaxCount= mongoose.model('invoiceTaxCount',invoiceTaxInvoiceCountSchema)
+const uniqueId= mongoose.model('invoiceOriginalId',invoiceOriginalUniqueIdSchema)
 const userCreation =mongoose.model('userCreation',userCreationSchema);
 const customerCreation =mongoose.model('customerCreation',customerCreationSchema);
 const customerCount= mongoose.model('customerCount',customerCountSchema)
@@ -688,4 +708,4 @@ const chargesCount= mongoose.model('chargeCount',chargesCountSchema)
 
 
 // Export as an object
-module.exports = { User, Approval ,Counter,invoice,countries,statee,layout,invoiceproformaCount,invoicetaxCount,userCreation,customerCreation,customerCount,chargesCreation,chargesCount};
+module.exports = { User, Approval ,Counter,invoice,countries,statee,layout,invoiceproformaCount,invoicetaxCount,uniqueId,userCreation,customerCreation,customerCount,chargesCreation,chargesCount};

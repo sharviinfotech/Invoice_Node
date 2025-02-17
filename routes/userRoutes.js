@@ -27,6 +27,7 @@ module.exports = (() => {
     router.put('/invoice/updateExitCustomer/:customerUniqueId',userHandler.customerUpdate);
     router.get('/invoice/getAllCustomerList',userHandler.getAllCustomer);
     router.post('/invoice/forgotPassword',userHandler.forgot);
+    router.post('/invoice/SaveCharges',userHandler.chargesCreation);
     router.get('/invoice/approveorrejectMail', userHandler.approveOrRejectMail);
     router.get('/invoice/getAllCharges',userHandler.chargesList);
     router.post('/invoice/reviewedUpadte',userHandler.reviewed);

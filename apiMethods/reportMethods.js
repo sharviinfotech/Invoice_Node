@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
 const moment = require('moment');
 const nodemailer = require('nodemailer');
-
+const { sendInvoiceDataToEmail } = require('../fetchInvoiceFolder/sendInvoiceToMail'); // Import email function
 module.exports = (() => {
     return {
         createUser: async (req, res) => {
@@ -415,7 +415,9 @@ module.exports = (() => {
                         status: 400
                     });
                 }
-
+                        // Send email with updated invoice data
+                 const recipientEmail = "sunilkumar@sharviinfotech.com"; // Replace with the correct recipient email
+                     await sendInvoiceDataToEmail(recipientEmail, JSON.stringify(updatedInvoice, null, 2));
                 res.status(200).json({
                     message: 'Invoice updated successfully',
                     updatedInvoice,

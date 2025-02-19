@@ -1266,6 +1266,39 @@ module.exports = (() => {
             }
 
         },
+        resetPassword: async (req, res) => {
+            console.log("resetPassword req.body",req.body)
+            try {
+                const {userUniqueId, userName, currentPassword, newPassword, confirmPassword } = req.body;
+        
+                // Check if user exists
+                const user = await userCreation.findOne({ userName });
+                if (!user) {
+                    return res.status(404).json({ message: "User not found", status: 404 });
+                }
+        
+                // Verify current password (since no hashing, we do a direct comparison)
+                if (user.userPassword !== currentPassword) {
+                    return res.status(400).json({ message: "Current password is incorrect", status: 400 });
+                }
+        
+                // Check if new password and confirm password match
+                if (newPassword !== confirmPassword) {
+                    return res.status(400).json({ message: "Please check New password and confirm password", status: 400 });
+                }
+        
+                // Update password in database
+                user.userPassword = newPassword;
+                user.userConfirmPassword = confirmPassword;
+                await user.save();
+        
+                res.status(200).json({ message: "Password reset successfully", status: 200 });
+        
+            } catch (error) {
+                res.status(500).json({ message: "Failed to reset password", status: 500, error: error.message });
+            }
+        },
+        
 
         chargesSubmit: async(req,res)=>{
 

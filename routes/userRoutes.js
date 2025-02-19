@@ -31,6 +31,7 @@ module.exports = (() => {
     router.get('/invoice/approveorrejectMail', userHandler.approveOrRejectMail);
     router.get('/invoice/getAllCharges',userHandler.chargesList);
     router.post('/invoice/reviewedUpadte',userHandler.reviewed);
+    router.post('/invoice/resetPassword',userHandler.reset);
     
     console.log('enter route')
     // router.post('/', userHandler.createUser);

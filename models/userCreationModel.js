@@ -375,8 +375,11 @@ const invoiceSchema = new mongoose.Schema({
     reviewedLoggedIn:{
         type:String,
         required:false
-    }
-            
+    },
+    createdByUser:{
+        type:String,
+        required:true
+    },     
             
             
 

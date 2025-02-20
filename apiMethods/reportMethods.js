@@ -155,7 +155,7 @@ module.exports = (() => {
                 //     toPan,invoiceNumber,invoiceDate,panNumber,gstinNo,typeOfAircraft,notes } = req.body
 
                 const { header, chargesList, taxList, subtotal, grandTotal, amountInWords, reason, invoiceApprovedOrRejectedByUser,
-                    invoiceApprovedOrRejectedDateAndTime, loggedInUser, status,proformaCardHeaderId,proformaCardHeaderName,reviewedDescription,reviewedDate,reviewedLoggedIn
+                    invoiceApprovedOrRejectedDateAndTime, loggedInUser, status,proformaCardHeaderId,proformaCardHeaderName,reviewedDescription,reviewedDate,reviewedLoggedIn,createdByUser
 
                 } = req.body
                 console.info("req.body", req.body)
@@ -300,7 +300,8 @@ module.exports = (() => {
                         proformaCardHeaderName,
                         reviewedDescription,
                         reviewedDate,
-                        reviewedLoggedIn
+                        reviewedLoggedIn,
+                        createdByUser
                     }
 
                 );

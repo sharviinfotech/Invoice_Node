@@ -1,6 +1,6 @@
 const axios = require('axios');
 const { User, Approval, Counter, invoice, countries, statee, layout, invoiceproformaCount,
-    invoicetaxCount,uniqueId, userCreation, customerCreation, customerCount,chargesCreation,chargesCount } = require('../models/userCreationModel');
+    invoicetaxCount,uniqueId, userCreation,userCount, customerCreation, customerCount,chargesCreation,chargesCount } = require('../models/userCreationModel');
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
 const moment = require('moment');
@@ -808,6 +808,7 @@ module.exports = (() => {
         //     }
         // },
         userCreationSave: async (req, res) => {
+            console.log("userCreationSave",req,res)
             try {
                 console.log("req.body", req.body);
                 const { userName, userFirstName, userLastName, userEmail, userContact, userPassword, userConfirmPassword, userStatus, userActivity } = req.body;
@@ -822,7 +823,7 @@ module.exports = (() => {
                     return res.status(400).json({ message: "User with this email already exists", status: 400 });
                 }
 
-                const counter = await invoiceCount.findOneAndUpdate(
+                const counter = await userCount.findOneAndUpdate(
                     { name: "userUniqueId" },
                     { $inc: { value: 1 } },
                     { new: true, upsert: true, setDefaultsOnInsert: true }

@@ -2,7 +2,10 @@ const axios = require("axios");
 
 async function fetchInvoiceList() {
     try {
-        const response = await axios.get('http://localhost:3000/api/invoice/getAllInvoices');
+        const data = {
+            
+        }
+        const response = await axios.post('http://localhost:3000/api/invoice/getAllInvoices', data);
         // console.log("response",response)
         // console.log("Invoice Data: 123", JSON.stringify(response.data.data, null, 2));
         const postResponse = response.data.data

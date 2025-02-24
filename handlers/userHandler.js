@@ -28,7 +28,9 @@ module.exports = (() => {
         chargesCreation:(req,res)=>userMethods.chargesSubmit(req,res),
         chargesList:(req,res)=>userMethods.listOfCharges(req,res),
         reviewed:(req,res)=>userMethods.reviewedInvoice(req,res),
-        reset:(req,res)=>userMethods.resetPassword(req,res)
+        reset:(req,res)=>userMethods.resetPassword(req,res),
+        notification:(req,res)=>userMethods.getNotification(req,res),
+        verifyed:(req,res)=>userMethods.verifyedAndUpdated(req,res)
 
     };
 })();

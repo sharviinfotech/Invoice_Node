@@ -155,10 +155,11 @@ module.exports = (() => {
                 //     toPan,invoiceNumber,invoiceDate,panNumber,gstinNo,typeOfAircraft,notes } = req.body
 
                 const { header, chargesList, taxList, subtotal, grandTotal, amountInWords, reason, invoiceApprovedOrRejectedByUser,
-                    invoiceApprovedOrRejectedDateAndTime, loggedInUser, status,proformaCardHeaderId,proformaCardHeaderName,reviewedDescription,reviewedDate,reviewedLoggedIn,createdByUser
+                    invoiceApprovedOrRejectedDateAndTime, loggedInUser, status,proformaCardHeaderId,proformaCardHeaderName,
+                    reviewedDescription,reviewedDate,reviewedLoggedIn,createdByUser,reviewed
 
                 } = req.body
-                console.info("req.body", req.body)
+                console.info("req.body 1", req.body)
                 // below is the proforma invoice
                var  invoiceUniqueNumber;
                var  invoiceDateObj;
@@ -185,9 +186,15 @@ module.exports = (() => {
                     throw new Error("ProformaInvoiceDate is required.");
                 }
             
-                if (header.BookingDateOfJourny) {
-                    bookingDate = moment(header.BookingDateOfJourny, "DD-MM-YYYY").toDate();
-                    console.log("Converted bookingDate :", bookingDate);
+                if (header.startBookingDateOfJourny) {
+                    startBookingDate = moment(header.startBookingDateOfJourny, "DD-MM-YYYY").toDate();
+                    console.log("Converted startBookingDate :", startBookingDate);
+                } else {
+                    throw new Error("ProformaInvoiceDate is required.");
+                }
+                if (header.endBookingDateOfJourny) {
+                    endBookingDate = moment(header.endBookingDateOfJourny, "DD-MM-YYYY").toDate();
+                    console.log("Converted endBookingDate :", endBookingDate);
                 } else {
                     throw new Error("ProformaInvoiceDate is required.");
                 }
@@ -222,9 +229,15 @@ module.exports = (() => {
                     throw new Error("ProformaInvoiceDate is required.");
                 }
                 
-                if (header.BookingDateOfJourny) {
-                    bookingDate = moment(header.BookingDateOfJourny, "DD-MM-YYYY").toDate();
-                    console.log("Converted bookingDate :", bookingDate);
+                if (header.startBookingDateOfJourny) {
+                    startBookingDate = moment(header.startBookingDateOfJourny, "DD-MM-YYYY").toDate();
+                    console.log("Converted startBookingDate :", startBookingDate);
+                } else {
+                    throw new Error("ProformaInvoiceDate is required.");
+                }
+                if (header.endBookingDateOfJourny) {
+                    endBookingDate = moment(header.endBookingDateOfJourny, "DD-MM-YYYY").toDate();
+                    console.log("Converted endBookingDate :", endBookingDate);
                 } else {
                     throw new Error("ProformaInvoiceDate is required.");
                 }
@@ -266,7 +279,8 @@ module.exports = (() => {
                     ProformaTypeOfAircraft: header.ProformaTypeOfAircraft,
                     ProformaSeatingCapasity: header.ProformaSeatingCapasity,
                     notes: header.notes,
-                    BookingDateOfJourny: bookingDate,
+                    startBookingDateOfJourny: startBookingDate,
+                    endBookingDateOfJourny:endBookingDate,
                     BookingSector: header.BookingSector,
                     BookingBillingFlyingTime: header.BookingBillingFlyingTime,
 
@@ -301,7 +315,8 @@ module.exports = (() => {
                         reviewedDescription,
                         reviewedDate,
                         reviewedLoggedIn,
-                        createdByUser
+                        createdByUser,
+                        reviewed
                     }
 
                 );
@@ -390,14 +405,25 @@ module.exports = (() => {
                             });
                         }
                     }
-
-                    if (updateData.header.BookingDateOfJourny) {
-                        const parsedDate = moment(updateData.header.BookingDateOfJourny, "DD-MM-YYYY", true);
+                    
+                    if (updateData.header.startBookingDateOfJourny) {
+                        const parsedDate = moment(updateData.header.startBookingDateOfJourny, "DD-MM-YYYY", true);
                         if (parsedDate.isValid()) {
-                            updateData.header.BookingDateOfJourny = parsedDate.toISOString(); // Convert to ISO format
+                            updateData.header.startBookingDateOfJourny = parsedDate.toISOString(); // Convert to ISO format
                         } else {
                             return res.status(400).json({
-                                message: "Invalid BookingDateOfJourny format. Use 'DD-MM-YYYY'.",
+                                message: "Invalid startBookingDateOfJourny format. Use 'DD-MM-YYYY'.",
+                                status: 400
+                            });
+                        }
+                    }
+                    if (updateData.header.endBookingDateOfJourny) {
+                        const parsedDate = moment(updateData.header.endBookingDateOfJourny, "DD-MM-YYYY", true);
+                        if (parsedDate.isValid()) {
+                            updateData.header.endBookingDateOfJourny = parsedDate.toISOString(); // Convert to ISO format
+                        } else {
+                            return res.status(400).json({
+                                message: "Invalid endBookingDateOfJourny format. Use 'DD-MM-YYYY'.",
                                 status: 400
                             });
                         }
@@ -441,7 +467,23 @@ module.exports = (() => {
 
         getTotalInvoice: async (req, res) => {
             try {
-                const invoices = await invoice.find();
+                const {userActivity} =req.body;
+                console.log("userActivity",userActivity);
+                var invoices
+                if(userActivity == 'MD'){
+
+                    const listOfPQ = await invoice.find({proformaCardHeaderId: 'PQ'});
+                     invoices = listOfPQ.filter(invoice => invoice.status === "Pending");
+                     console.log("IF MD")
+
+                     
+                }
+                else{
+                    invoices = await invoice.find();
+                     console.log("Else ADMIN")
+                    
+                }
+               
                 console.log('invoices', invoices)
                 if (!invoices || invoices.length === 0) {
                     return res.status(200).json({
@@ -452,12 +494,14 @@ module.exports = (() => {
                 }
 
                 // Format the date fields
+                
                 const formattedInvoices = invoices.map(inv => ({
                     ...inv._doc,
                     header: {
                         ...inv.header,
                         ProformaInvoiceDate: moment(inv.header.ProformaInvoiceDate).format("DD-MM-YYYY"),
-                        BookingDateOfJourny: moment(inv.header.BookingDateOfJourny).format("DD-MM-YYYY")
+                        startBookingDateOfJourny: moment(inv.header.startBookingDateOfJourny).format("DD-MM-YYYY"),
+                        endBookingDateOfJourny: moment(inv.header.endBookingDateOfJourny).format("DD-MM-YYYY")
                     }
                 }));
 
@@ -501,10 +545,12 @@ module.exports = (() => {
                     ProformaTypeOfAircraft: header.ProformaTypeOfAircraft,
                     ProformaSeatingCapasity: header.ProformaSeatingCapasity,
                     notes: header.notes,
-                    BookingDateOfJourny: header.BookingDateOfJourny,
-                    BookingSector: header.BookingSector,
+                    startBookingDateOfJourny: header.startBookingDateOfJourny,
+                    startBookingDateOfJourny: header.startBookingDateOfJourny,
+                    endBookingDateOfJourny: header.endBookingDateOfJourny,
                     BookingBillingFlyingTime: header.BookingBillingFlyingTime,
                 };
+                
 
                 // const bankObj = {
                 //     accountName: bankDetails.accountName,
@@ -1048,7 +1094,7 @@ module.exports = (() => {
         reviewedInvoice: async (req, res) => {
             console.log("req.body", req.body);
             try {
-                const { originalUniqueId, reviewedDescription, reviewedDate, reviewedLoggedIn} = req.body; // Extract only required fields
+                const { originalUniqueId, reviewedDescription, reviewedDate, reviewedLoggedIn,reviewed} = req.body; // Extract only required fields
 
                 if (!originalUniqueId) {
                     return res.status(400).json({ message: "userUniqueId and status are required", status: 400 });
@@ -1058,7 +1104,7 @@ module.exports = (() => {
                 const updatedUser = await invoice.findOneAndUpdate(
                     { originalUniqueId }, // Search by userUniqueId
                     {
-                        $set: { reviewedDescription, reviewedDate, reviewedLoggedIn } // Update or add status & remarkReason
+                        $set: { reviewedDescription, reviewedDate, reviewedLoggedIn,reviewed } // Update or add status & remarkReason
                     },
                     { new: true, runValidators: true } // Return updated document
                 );
@@ -1367,7 +1413,86 @@ module.exports = (() => {
 
         },
 
-
+        getNotification: async (req, res) => {
+            try {
+                const invoices = await invoice.find();
+                console.log("invoices", invoices);
+        
+                if (!invoices || invoices.length === 0) {
+                    return res.status(200).json({
+                        message: "No Data Available",
+                        data: [],
+                        notificationCount: 0,
+                        status: 200
+                    });
+                }
+        
+                // Filter invoices where reviewed is true
+                const reviewedInvoices = invoices.filter(inv => inv.reviewed === true);
+        
+                
+                // Format the date fields
+                const formattedInvoices = reviewedInvoices.map(inv => ({
+                    ...inv._doc,
+                    header: {
+                        ...inv.header,
+                        ProformaInvoiceDate: moment(inv.header.ProformaInvoiceDate).format("DD-MM-YYYY"),
+                        startBookingDateOfJourny: moment(inv.header.startBookingDateOfJourny).format("DD-MM-YYYY"),
+                        endBookingDateOfJourny: moment(inv.header.endBookingDateOfJourny).format("DD-MM-YYYY")
+                    }
+                }));
+        
+                return res.status(200).json({
+                    message: "Invoices Fetched Successfully",
+                    data: formattedInvoices,
+                    notificationCount: formattedInvoices.length,
+                    status: 200
+                });
+        
+            } catch (error) {
+                console.error("Error fetching invoices:", error);
+                res.status(500).json({
+                    message: "Failed to Fetch Invoices Data",
+                    error: error.message
+                });
+            }
+        },
+        verifyedAndUpdated: async (req, res) => {
+            try {
+                console.log("verifyedAndUpdated req.body:", JSON.stringify(req.body, null, 2));
+        
+                const { originalUniqueId, reviewed } = req.body;
+        
+                if (!originalUniqueId) {
+                    return res.status(400).json({ message: "originalUniqueId is required", status: 400 });
+                }
+        
+                const updatedUser = await invoice.findOneAndUpdate(
+                    { originalUniqueId },
+                    { $set: { reviewed } },
+                    { new: true, runValidators: true }
+                );
+        
+                if (!updatedUser) {
+                    return res.status(404).json({ message: "Invoice Not Found", status: 404 });
+                }
+        
+                // ✅ Instead of calling getNotification() here, return updated notifications
+                const remainingInvoices = await invoice.find({ reviewed: false });
+        
+                res.status(200).json({
+                    message: "Verified and updated successfully",
+                    data: updatedUser,
+                    notificationCount: remainingInvoices.length, // Updated count
+                    status: 200
+                });
+        
+            } catch (error) {
+                console.error("Error in verifyedAndUpdated:", error);
+                res.status(500).json({ message: "Verification update failed", status: 500, error: error.message });
+            }
+        }
+        
 
         // below is the username and password
         // userLogin: async (req, res) => {

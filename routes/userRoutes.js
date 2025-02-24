@@ -14,7 +14,7 @@ module.exports = (() => {
     router.get('/invoice/countryList', userHandler.countryList);
     router.get('/invoice/stateList', userHandler.stateList);
     router.put('/updateInvoiceByReferenceNo/:referenceNo', userHandler.updateInvoice);
-    router.get('/invoice/getAllInvoices',userHandler.getTotalInvoice);
+    router.post('/invoice/getAllInvoices',userHandler.getTotalInvoice);
     router.post('/invoice/invoiceTemplate',userHandler.invoiceLayout);
     router.get('/invoice/getInvoiceLayout',userHandler.getInvoiceLayout)
     router.post('/invoice/userNewCreation',userHandler.userCreationNew);
@@ -32,6 +32,8 @@ module.exports = (() => {
     router.get('/invoice/getAllCharges',userHandler.chargesList);
     router.post('/invoice/reviewedUpadte',userHandler.reviewed);
     router.post('/invoice/resetPassword',userHandler.reset);
+    router.get('/invoice/getAllNotification',userHandler.notification);
+    router.post('/invoice/verifyedAndUpdated',userHandler.verifyed);
     
     console.log('enter route')
     // router.post('/', userHandler.createUser);

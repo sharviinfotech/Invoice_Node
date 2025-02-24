@@ -146,7 +146,7 @@ const sendInvoiceDataToEmail = async (toEmail, postTotalInvoiceList) => {
                     <td>${header.ProformaTypeOfAircraft || 'N/A'}</td>
                     <td>${header.ProformaCity || 'N/A'}</td>
                     <td>${header.BookingSector || 'N/A'}</td>
-                    <td>${header.BookingDateOfJourny || 'N/A'}</td>
+                    <td>${header.startBookingDateOfJourny || 'N/A'}/${header.endBookingDateOfJourny || 'N/A'}</td>
                     <td>${data.grandTotal || 'N/A'}</td>
                     <td>
     <div style="display: flex; justify-content: center; gap: 10px;">

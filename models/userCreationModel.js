@@ -388,7 +388,12 @@ const invoiceSchema = new mongoose.Schema({
     reviewed:{
         type:Boolean,
         required:true
-    }   
+    } , 
+    reviewedReSubmited:{
+        type:Boolean,
+        required:true
+    } , 
+
             
             
 

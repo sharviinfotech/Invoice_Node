@@ -156,7 +156,7 @@ module.exports = (() => {
 
                 const { header, chargesList, taxList, subtotal, grandTotal, amountInWords, reason, invoiceApprovedOrRejectedByUser,
                     invoiceApprovedOrRejectedDateAndTime, loggedInUser, status,proformaCardHeaderId,proformaCardHeaderName,
-                    reviewedDescription,reviewedDate,reviewedLoggedIn,createdByUser,reviewed
+                    reviewedDescription,reviewedDate,reviewedLoggedIn,createdByUser,reviewed,reviewedReSubmited
 
                 } = req.body
                 console.info("req.body 1", req.body)
@@ -316,7 +316,8 @@ module.exports = (() => {
                         reviewedDate,
                         reviewedLoggedIn,
                         createdByUser,
-                        reviewed
+                        reviewed,
+                        reviewedReSubmited
                     }
 
                 );
@@ -996,7 +997,7 @@ module.exports = (() => {
         approvedOrRejected: async (req, res) => {
             console.log("req.body", req.body)
             try {
-                const { originalUniqueId, status, reason, invoiceApprovedOrRejectedByUser, invoiceApprovedOrRejectedDateAndTime } = req.body; // Extract only required fields
+                const { originalUniqueId, status, reason, invoiceApprovedOrRejectedByUser, invoiceApprovedOrRejectedDateAndTime,reviewedReSubmited } = req.body; // Extract only required fields
 
                 if (!originalUniqueId || !status) {
                     return res.status(400).json({ message: "userUniqueId and status are required", status: 400 });
@@ -1006,7 +1007,7 @@ module.exports = (() => {
                 const updatedUser = await invoice.findOneAndUpdate(
                     { originalUniqueId }, // Search by userUniqueId
                     {
-                        $set: { status, reason, invoiceApprovedOrRejectedByUser, invoiceApprovedOrRejectedDateAndTime } // Update or add status & remarkReason
+                        $set: { status, reason, invoiceApprovedOrRejectedByUser, invoiceApprovedOrRejectedDateAndTime,reviewedReSubmited } // Update or add status & remarkReason
                     },
                     { new: true, runValidators: true } // Return updated document
                 );
@@ -1094,7 +1095,7 @@ module.exports = (() => {
         reviewedInvoice: async (req, res) => {
             console.log("req.body", req.body);
             try {
-                const { originalUniqueId, reviewedDescription, reviewedDate, reviewedLoggedIn,reviewed} = req.body; // Extract only required fields
+                const { originalUniqueId, reviewedDescription, reviewedDate, reviewedLoggedIn,reviewed,reviewedReSubmited} = req.body; // Extract only required fields
 
                 if (!originalUniqueId) {
                     return res.status(400).json({ message: "userUniqueId and status are required", status: 400 });
@@ -1428,11 +1429,22 @@ module.exports = (() => {
                 }
         
                 // Filter invoices where reviewed is true
-                const reviewedInvoices = invoices.filter(inv => inv.reviewed === true);
-        
+                const reviewedInvoicesAdmin = invoices.filter(inv => inv.reviewed === true);
+                const reviewedInvoicesMD = invoices.filter(inv => inv.reviewedReSubmited === true);
                 
                 // Format the date fields
-                const formattedInvoices = reviewedInvoices.map(inv => ({
+                const adminNotificationList = reviewedInvoicesAdmin.map(inv => ({
+                    ...inv._doc,
+                    header: {
+                        ...inv.header,
+                        ProformaInvoiceDate: moment(inv.header.ProformaInvoiceDate).format("DD-MM-YYYY"),
+                        startBookingDateOfJourny: moment(inv.header.startBookingDateOfJourny).format("DD-MM-YYYY"),
+                        endBookingDateOfJourny: moment(inv.header.endBookingDateOfJourny).format("DD-MM-YYYY")
+                    }
+                }));
+
+                  // Format the date fields
+                  const mdNotificationList = reviewedInvoicesMD.map(inv => ({
                     ...inv._doc,
                     header: {
                         ...inv.header,
@@ -1443,9 +1455,12 @@ module.exports = (() => {
                 }));
         
                 return res.status(200).json({
-                    message: "Invoices Fetched Successfully",
-                    data: formattedInvoices,
-                    notificationCount: formattedInvoices.length,
+                    adminMessage: "Pending Corrections Fetched Successfully",
+                    mdMessage: "Pending Corrections Fetched Successfully",
+                    adminList: adminNotificationList,
+                    mdList:mdNotificationList,
+                    adminNotificationCount: adminNotificationList.length,
+                    mdNotificationCount: mdNotificationList.length,
                     status: 200
                 });
         
@@ -1461,7 +1476,7 @@ module.exports = (() => {
             try {
                 console.log("verifyedAndUpdated req.body:", JSON.stringify(req.body, null, 2));
         
-                const { originalUniqueId, reviewed } = req.body;
+                const { originalUniqueId, reviewed,reviewedReSubmited } = req.body;
         
                 if (!originalUniqueId) {
                     return res.status(400).json({ message: "originalUniqueId is required", status: 400 });
@@ -1469,7 +1484,7 @@ module.exports = (() => {
         
                 const updatedUser = await invoice.findOneAndUpdate(
                     { originalUniqueId },
-                    { $set: { reviewed } },
+                    { $set: { reviewed,reviewedReSubmited } },
                     { new: true, runValidators: true }
                 );
         

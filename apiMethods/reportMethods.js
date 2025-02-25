@@ -1105,7 +1105,7 @@ module.exports = (() => {
                 const updatedUser = await invoice.findOneAndUpdate(
                     { originalUniqueId }, // Search by userUniqueId
                     {
-                        $set: { reviewedDescription, reviewedDate, reviewedLoggedIn,reviewed } // Update or add status & remarkReason
+                        $set: { reviewedDescription, reviewedDate, reviewedLoggedIn,reviewed,reviewedReSubmited } // Update or add status & remarkReason
                     },
                     { new: true, runValidators: true } // Return updated document
                 );
@@ -1506,7 +1506,47 @@ module.exports = (() => {
                 console.error("Error in verifyedAndUpdated:", error);
                 res.status(500).json({ message: "Verification update failed", status: 500, error: error.message });
             }
+        },
+
+        deleteGlobally: async (req, res) => {
+            try {
+                const { globalId, screenName } = req.body;
+                console.log("globalId",globalId,"typeOfTable",screenName)
+                if (!globalId || !screenName) {
+                    return res.status(400).json({ message: "Missing required fields", status: 400 });
+                }
+        
+                let deletedRecord;
+        
+                switch (screenName) {
+                    case "invoice":
+                        deletedRecord = await invoice.findOneAndDelete({ originalUniqueId: globalId });
+                        break;
+                    case "customer":
+                        deletedRecord = await customerCreation.findOneAndDelete({ customerUniqueId: globalId });
+                        break;
+                    case "charges":
+                        deletedRecord = await chargesCreation.findOneAndDelete({ chargesUniqueId: globalId });
+                        break;
+                    case "user":
+                        deletedRecord = await userCreation.findOneAndDelete({ userUniqueId: globalId });
+                        break;
+                    default:
+                        return res.status(400).json({ message: "Invalid table type", status: 400 });
+                }
+                console.log("deletedRecord",deletedRecord)
+        
+                if (!deletedRecord) {
+                    return res.status(404).json({ message: "Record not found", status: 404 });
+                }
+        
+                res.status(200).json({ message: "Record deleted successfully", status: 200 });
+            } catch (error) {
+                console.error("Error in deleteGlobally:", error);
+                res.status(500).json({ message: "Deletion failed", status: 500, error: error.message });
+            }
         }
+        
         
 
         // below is the username and password

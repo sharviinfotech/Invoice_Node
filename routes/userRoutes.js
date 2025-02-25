@@ -34,7 +34,7 @@ module.exports = (() => {
     router.post('/invoice/resetPassword',userHandler.reset);
     router.get('/invoice/getAllNotification',userHandler.notification);
     router.post('/invoice/verifyedAndUpdated',userHandler.verifyed);
-    
+    router.post('/invoice/deteleGlobal',userHandler.deleteData);
     console.log('enter route')
     // router.post('/', userHandler.createUser);
 

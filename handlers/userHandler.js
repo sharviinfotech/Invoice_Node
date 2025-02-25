@@ -30,7 +30,8 @@ module.exports = (() => {
         reviewed:(req,res)=>userMethods.reviewedInvoice(req,res),
         reset:(req,res)=>userMethods.resetPassword(req,res),
         notification:(req,res)=>userMethods.getNotification(req,res),
-        verifyed:(req,res)=>userMethods.verifyedAndUpdated(req,res)
+        verifyed:(req,res)=>userMethods.verifyedAndUpdated(req,res),
+        deleteData:(req,res)=>userMethods.deleteGlobally(req,res),
 
     };
 })();

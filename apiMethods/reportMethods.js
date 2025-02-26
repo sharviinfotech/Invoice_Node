@@ -156,7 +156,7 @@ module.exports = (() => {
 
                 const { header, chargesList, taxList, subtotal, grandTotal, amountInWords, reason, invoiceApprovedOrRejectedByUser,
                     invoiceApprovedOrRejectedDateAndTime, loggedInUser, status,proformaCardHeaderId,proformaCardHeaderName,
-                    reviewedDescription,reviewedDate,reviewedLoggedIn,createdByUser,reviewed,reviewedReSubmited
+                    reviewedDescription,reviewedDate,reviewedLoggedIn,createdByUser,reviewed,reviewedReSubmited,pqSameforTAX
 
                 } = req.body
                 console.info("req.body 1", req.body)
@@ -242,7 +242,8 @@ module.exports = (() => {
                     throw new Error("ProformaInvoiceDate is required.");
                 }
                 console.log("counter", counter)
-                invoiceReferenceNo = counter.value;
+                // invoiceReferenceNo = counter.value;
+                invoiceReferenceNo = pqSameforTAX;
                 start = counter.startWith;
                 console.log("invoiceReferenceNo", invoiceReferenceNo)
                 const parts = header.ProformaInvoiceDate.split('-'); // Split the date into parts
@@ -251,6 +252,7 @@ module.exports = (() => {
                 console.log("mm_yyyy", mm_yyyy);
                  invoiceUniqueNumber = start + invoiceReferenceNo + '/' + mm_yyyy
                 console.log("start", start, invoiceUniqueNumber)
+
                 } 
 
                 // Get and increment the SINGLE counter
@@ -317,7 +319,8 @@ module.exports = (() => {
                         reviewedLoggedIn,
                         createdByUser,
                         reviewed,
-                        reviewedReSubmited
+                        reviewedReSubmited,
+                        pqSameforTAX
                     }
 
                 );
@@ -331,11 +334,21 @@ module.exports = (() => {
                     status: 200
                 });
             } catch (err) {
-                console.error("Error submitting approval:", err);
-                res.status(500).json({
-                    error: "Failed to Submit Invoice Creation",
-                    status: 500
-                });
+                console.error("Error submitting invoice:", err);
+
+    if (err.code === 11000) {
+        const duplicateInvoiceNumber = err.keyValue?.invoiceUniqueNumber || "Unknown"; // Extracting duplicate value
+
+        res.status(400).json({
+            message: `A tax invoice has already been created for Selected Proforma Invoice Number`,
+            status:400
+        });
+    } else {
+        res.status(500).json({ message: "Failed to Submit Invoice Creation", error: err.message,status:500 });
+    }
+
+    console.log("error.code", err.code); // Corrected logging
+                
             }
         },
 

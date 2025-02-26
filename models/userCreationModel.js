@@ -392,7 +392,15 @@ const invoiceSchema = new mongoose.Schema({
     reviewedReSubmited:{
         type:Boolean,
         required:true
-    } , 
+    }, 
+    pqSameforTAX: {
+        type: Number,
+        required: function () {
+            return this.proformaCardHeaderId === "TAX";
+        },
+        default: 0 // Ensure it's never undefined or null
+    }
+    
 
             
             

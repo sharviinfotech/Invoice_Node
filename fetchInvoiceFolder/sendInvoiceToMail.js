@@ -1,6 +1,7 @@
 
 const axios = require("axios");
 const nodemailer = require("nodemailer");
+const recevieInvoiceSendToMail = require('../fetchInvoiceFolder/intialmailsend')
 
 
 // const sendInvoiceDataToEmail = async (toEmail, postTotalInvoiceList) => {
@@ -249,6 +250,7 @@ const approveInvoice = async (originalUniqueId) => {
         const result = await response.json();
         if (response.ok) {
             console.log("Invoice approved:", result);
+            
         } else {
             console.error("Failed to approve invoice:", result);
         }
@@ -277,6 +279,7 @@ const rejectInvoice = async (originalUniqueId) => {
         const result = await response.json();
         if (response.ok) {
             console.log("Invoice rejected:", result);
+           
         } else {
             console.error("Failed to reject invoice:", result);
         }

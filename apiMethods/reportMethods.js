@@ -5,7 +5,9 @@ const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
 const moment = require('moment');
 const nodemailer = require('nodemailer');
-const { sendInvoiceDataToEmail } = require('../fetchInvoiceFolder/sendInvoiceToMail'); // Import email function
+// const { sendInvoiceDataToEmail } = require('../fetchInvoiceFolder/sendInvoiceToMail'); // Import email function
+const recevieInvoiceSendToMail = require('../fetchInvoiceFolder/intialmailsend')
+
 module.exports = (() => {
     return {
         createUser: async (req, res) => {
@@ -326,7 +328,7 @@ module.exports = (() => {
                 );
                 console.log("newInvoice", newInvoice)
                 const savedInvoice = await newInvoice.save();
-
+                recevieInvoiceSendToMail.send()
                 res.status(200).json({
                     invoiceReferenceNo,
                     message: "Generated",
@@ -458,7 +460,9 @@ module.exports = (() => {
                 }
                         // Send email with updated invoice data
                  const recipientEmail = "sunilkumar@sharviinfotech.com"; // Replace with the correct recipient email
-                     await sendInvoiceDataToEmail(recipientEmail, JSON.stringify(updatedInvoice, null, 2));
+                    //  await sendInvoiceDataToEmail(recipientEmail, JSON.stringify(updatedInvoice, null, 2));
+                    console.log("send email update")
+                    recevieInvoiceSendToMail.send()
                 res.status(200).json({
                     message: 'Invoice updated successfully',
                     updatedInvoice,
@@ -1028,7 +1032,7 @@ module.exports = (() => {
                 if (!updatedUser) {
                     return res.status(404).json({ message: "User Not Found", status: 404 });
                 }
-
+                recevieInvoiceSendToMail.send()
                 res.status(200).json({ message: "Status Updated Successfully", data: updatedUser, status: 200 });
 
             } catch (error) {
@@ -1091,6 +1095,7 @@ module.exports = (() => {
         }, 5000);
     </script>
                 `);
+                recevieInvoiceSendToMail.send()
 
             } catch (error) {
                 res.send(`
@@ -1507,7 +1512,7 @@ module.exports = (() => {
         
                 // ✅ Instead of calling getNotification() here, return updated notifications
                 const remainingInvoices = await invoice.find({ reviewed: false });
-        
+                recevieInvoiceSendToMail.send()
                 res.status(200).json({
                     message: "Verified and updated successfully",
                     data: updatedUser,

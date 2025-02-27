@@ -5,6 +5,7 @@ const connectDB = require('./config/db');
 const { fetchInvoiceList, } = require('./fetchInvoiceFolder/totalInvoiceData'); // Fixed typo here\
 const{sendInvoiceDataToEmail} =require('./fetchInvoiceFolder/sendInvoiceToMail')
 const userHandler = require('./handlers/userHandler');
+const recevieInvoiceSendToMail = require('./fetchInvoiceFolder/intialmailsend')
 // Initialize App
 const app = express();
 
@@ -22,43 +23,44 @@ connectDB();
 // Server Initialization
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+recevieInvoiceSendToMail.send()
 
-async function postInvoiceListInMail() {
-    try {
-        console.log("postInvoiceListInMail");
+// async function postInvoiceListInMail() {
+//     try {
+//         console.log("postInvoiceListInMail");
 
-        const reqBody = {
-            userActivity: "MD" // or "ADMIN" based on your requirement
-        };
+//         const reqBody = {
+//             userActivity: "MD" // or "ADMIN" based on your requirement
+//         };
 
-        // Call the API
-        const response = await fetch("http://localhost:3000/api/invoice/getAllInvoices", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(reqBody),
-        });
+//         // Call the API
+//         const response = await fetch("http://localhost:3000/api/invoice/getAllInvoices", {
+//             method: "POST",
+//             headers: {
+//                 "Content-Type": "application/json",
+//             },
+//             body: JSON.stringify(reqBody),
+//         });
 
-        // Parse the response
-        const responseData = await response.json();
-        if (responseData.status !== 200) {
-            throw new Error(responseData.message || "Failed to fetch invoice data");
-        }
+//         // Parse the response
+//         const responseData = await response.json();
+//         if (responseData.status !== 200) {
+//             throw new Error(responseData.message || "Failed to fetch invoice data");
+//         }
 
-        const invoiceData = responseData.data;
-        console.log("Invoice data received:", invoiceData);
+//         const invoiceData = responseData.data;
+//         console.log("Invoice data received:", invoiceData);
 
-        // Send email
-        const email = "sunilkumar@sharviinfotech.com";
-        await sendInvoiceDataToEmail(email, JSON.stringify(invoiceData, null, 2));
+//         // Send email
+//         const email = "sunilkumar@sharviinfotech.com";
+//         await sendInvoiceDataToEmail(email, JSON.stringify(invoiceData, null, 2));
 
-    } catch (error) {
-        console.error("Error fetching invoice data:", error.message);
-    }
-}
+//     } catch (error) {
+//         console.error("Error fetching invoice data:", error.message);
+//     }
+// }
 
-postInvoiceListInMail();
+// postInvoiceListInMail();
 
 
 

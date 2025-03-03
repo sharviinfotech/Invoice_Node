@@ -399,6 +399,17 @@ const invoiceSchema = new mongoose.Schema({
             return this.proformaCardHeaderId === "TAX";
         },
         default: 0 // Ensure it's never undefined or null
+    },
+    pqStatus:{
+        type:String,
+        required:true
+    },
+    pqUniqueId:{
+        type: Number,
+        required: function () {
+            return this.proformaCardHeaderId === "TAX";
+        },
+        default: 0 // Ensure it's never undefined or null
     }
     
 

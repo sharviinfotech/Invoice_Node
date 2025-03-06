@@ -343,9 +343,8 @@ module.exports = (() => {
 
                 const savedInvoice = await newInvoice.save();
 
-                // Send email after saving
-                await recevieInvoiceSendToMail.send();
-
+               
+                recevieInvoiceSendToMail.send()
                 res.status(200).json({
                     invoiceReferenceNo,
                     message: "Generated",
@@ -482,7 +481,7 @@ module.exports = (() => {
                 console.log("send email update")
                 recevieInvoiceSendToMail.send()
                 res.status(200).json({
-                    message: 'Invoice updated successfully',
+                    message: `Proforma Invoice Number ${updatedInvoice.invoiceUniqueNumber} updated successfully`,
                     updatedInvoice,
                     status: 200
                 });

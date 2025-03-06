@@ -1029,35 +1029,75 @@ module.exports = (() => {
                 res.status(500).json({ message: "Server Error", status: 500, isValid: false, error: error.message });
             }
         },
+        // approvedOrRejected: async (req, res) => {
+        //     console.log("req.body", req.body)
+        //     try {
+        //         const { originalUniqueId, status, reason, invoiceApprovedOrRejectedByUser, invoiceApprovedOrRejectedDateAndTime, reviewedReSubmited } = req.body; // Extract only required fields
+
+        //         if (!originalUniqueId || !status) {
+        //             return res.status(400).json({ message: "userUniqueId and status are required", status: 400 });
+        //         }
+
+        //         // Find and update the user with new status and remarkReason
+        //         const updatedUser = await invoice.findOneAndUpdate(
+        //             { originalUniqueId }, // Search by userUniqueId
+        //             {
+        //                 $set: { status, reason, invoiceApprovedOrRejectedByUser, invoiceApprovedOrRejectedDateAndTime, reviewedReSubmited } // Update or add status & remarkReason
+        //             },
+        //             { new: true, runValidators: true } // Return updated document
+        //         );
+
+        //         if (!updatedUser) {
+        //             return res.status(404).json({ message: "User Not Found", status: 404 });
+        //         }
+        //         recevieInvoiceSendToMail.send()
+        //         res.status(200).json({ message: "Status Updated Successfully", data: updatedUser, status: 200 });
+
+        //     } catch (error) {
+        //         res.status(500).json({ message: "Update Failed", status: 500, error: error.message });
+        //     }
+        // },
+
+
         approvedOrRejected: async (req, res) => {
-            console.log("req.body", req.body)
+            console.log("req.body", req.body);
             try {
-                const { originalUniqueId, status, reason, invoiceApprovedOrRejectedByUser, invoiceApprovedOrRejectedDateAndTime, reviewedReSubmited } = req.body; // Extract only required fields
-
+                const { originalUniqueId, status, reason, invoiceApprovedOrRejectedByUser, invoiceApprovedOrRejectedDateAndTime, reviewedReSubmited } = req.body;
+        
                 if (!originalUniqueId || !status) {
-                    return res.status(400).json({ message: "userUniqueId and status are required", status: 400 });
+                    return res.status(400).json({ message: "originalUniqueId and status are required", status: 400 });
                 }
-
-                // Find and update the user with new status and remarkReason
-                const updatedUser = await invoice.findOneAndUpdate(
-                    { originalUniqueId }, // Search by userUniqueId
+        
+                // Find and update the invoice with the new status and reason
+                const updatedInvoice = await invoice.findOneAndUpdate(
+                    { originalUniqueId }, 
                     {
-                        $set: { status, reason, invoiceApprovedOrRejectedByUser, invoiceApprovedOrRejectedDateAndTime, reviewedReSubmited } // Update or add status & remarkReason
+                        $set: { status, reason, invoiceApprovedOrRejectedByUser, invoiceApprovedOrRejectedDateAndTime, reviewedReSubmited }
                     },
-                    { new: true, runValidators: true } // Return updated document
+                    { new: true, runValidators: true }
                 );
-
-                if (!updatedUser) {
-                    return res.status(404).json({ message: "User Not Found", status: 404 });
+        
+                if (!updatedInvoice) {
+                    return res.status(404).json({ message: "Invoice Not Found", status: 404 });
                 }
-                recevieInvoiceSendToMail.send()
-                res.status(200).json({ message: "Status Updated Successfully", data: updatedUser, status: 200 });
-
+        
+                // Sending email after update (assuming this function exists)
+                recevieInvoiceSendToMail.send();
+        
+                // Determine success message based on status
+                const successMessage = status === "Rejected" 
+                    ? "Rejected successfully" 
+                    : status === "Approved"
+                    ? "Approved successfully"
+                    : "Status Updated Successfully";
+        
+                res.status(200).json({ message: successMessage, data: updatedInvoice, status: 200 });
+        
             } catch (error) {
                 res.status(500).json({ message: "Update Failed", status: 500, error: error.message });
             }
         },
-
+        
         approvedOrRejectedMail: async (req, res) => {
             try {
                 console.log("req.query", req.query)

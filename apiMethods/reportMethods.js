@@ -513,6 +513,14 @@ module.exports = (() => {
 
 
                 }
+                else if (userActivity == 'ACCOUNTS') {
+
+                    const listOfPQ = await invoice.find({ proformaCardHeaderId: 'PQ' });
+                    invoices = listOfPQ.filter(invoice => invoice.status === "Pending");
+                    console.log("IF MD")
+
+
+                }
                 else {
                     invoices = await invoice.find();
                     console.log("Else ADMIN")

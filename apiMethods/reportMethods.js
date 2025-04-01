@@ -1148,7 +1148,7 @@ module.exports = (() => {
                         </script>
                     `);
                 }
-
+                await recevieInvoiceSendToMail.send();
                 res.send(`
                   <script>
         var newWindow = window.open("", "_blank", "width=400,height=200");
@@ -1160,9 +1160,10 @@ module.exports = (() => {
         }, 5000);
     </script>
                 `);
-                recevieInvoiceSendToMail.send()
+               
 
             } catch (error) {
+                await recevieInvoiceSendToMail.send();
                 res.send(`
                     <script>
                         var newWindow = window.open("", "_blank", "width=400,height=200");

@@ -8,8 +8,8 @@ const userHandler = require('./handlers/userHandler');
 const recevieInvoiceSendToMail = require('./fetchInvoiceFolder/intialmailsend')
 // Initialize App
 const app = express();
-const PORT = process.env.PORT || 3001;
-const SERVER_URL = process.env.SERVER_URL || 'http://192.9.200.24';
+const PORT = 3000;
+const SERVER_URL = '125.22.172.147';
 
 // Middleware
 app.use(cors());

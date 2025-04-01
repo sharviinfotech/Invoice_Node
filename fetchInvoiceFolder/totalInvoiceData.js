@@ -1,13 +1,13 @@
 const axios = require("axios");
-const PORT = process.env.port || 3000;
-const SERVER_URL = process.env.SERVER_URL || 'http://localhost';
+const PORT = 3000;
+const SERVER_URL = '125.22.172.147';
 
 async function fetchInvoiceList() {
     try {
         const data = {
             
         }
-        const response = await axios.post(`http://${SERVER_URL}:${PORT}/api/invoice/getAllInvoices`, data);
+        const response = await axios.post(`http://125.22.172.147:3000/api/invoice/getAllInvoices`, data);
         // console.log("response",response)
         // console.log("Invoice Data: 123", JSON.stringify(response.data.data, null, 2));
         const postResponse = response.data.data

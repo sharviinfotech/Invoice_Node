@@ -8,6 +8,8 @@ const userHandler = require('./handlers/userHandler');
 const recevieInvoiceSendToMail = require('./fetchInvoiceFolder/intialmailsend')
 // Initialize App
 const app = express();
+const PORT = process.env.PORT || 3001;
+const SERVER_URL = process.env.SERVER_URL || 'http://192.9.200.24';
 
 // Middleware
 app.use(cors());
@@ -21,8 +23,10 @@ app.use('/api', routes);
 connectDB();
 
 // Server Initialization
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+app.listen(PORT, () => {
+    console.log(`🚀 Server running on ${SERVER_URL}:${PORT}`);
+});
 recevieInvoiceSendToMail.send()
 
 // async function postInvoiceListInMail() {

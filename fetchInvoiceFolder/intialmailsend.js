@@ -1,6 +1,7 @@
 
 const{sendInvoiceDataToEmail} =require('./sendInvoiceToMail')
-
+const PORT = process.env.port || 3000;
+const SERVER_URL = process.env.SERVER_URL || 'http://localhost';
 
 
 
@@ -13,7 +14,7 @@ const send = async  (s) =>{
         };
 
         // Call the API
-        const response = await fetch("http://localhost:3000/api/invoice/getAllInvoices", {
+        const response = await fetch(`http://${SERVER_URL}:${PORT}/api/invoice/getAllInvoices`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

@@ -2,8 +2,9 @@
 const axios = require("axios");
 const nodemailer = require("nodemailer");
 const recevieInvoiceSendToMail = require('../fetchInvoiceFolder/intialmailsend')
-const PORT = 3000;
-const SERVER_URL = '125.22.172.147';
+
+const { BASE_SERVER_URL, BASE_PORT } = require('../baseFile');
+
 
 // const sendInvoiceDataToEmail = async (toEmail, postTotalInvoiceList) => {
 //     console.log("toEmail", toEmail, "postTotalInvoiceList", typeof (postTotalInvoiceList));
@@ -152,12 +153,12 @@ const sendInvoiceDataToEmail = async (toEmail, postTotalInvoiceList) => {
                     <td>${data.grandTotal || 'N/A'}</td>
                     <td>
     <div style="display: flex; justify-content: center; gap: 10px;">
-        <a href="http://125.22.172.147:3000/api/invoice/approveorrejectMail?originalUniqueId=${data.originalUniqueId}&status=Approved&reason=approvedFromMail&invoiceApprovedOrRejectedByUser=MD&invoiceUniqueNumber=${data.invoiceUniqueNumber}" 
+        <a href="${BASE_SERVER_URL}:${BASE_PORT}/api/invoice/approveorrejectMail?originalUniqueId=${data.originalUniqueId}&status=Approved&reason=approvedFromMail&invoiceApprovedOrRejectedByUser=MD&invoiceUniqueNumber=${data.invoiceUniqueNumber}" 
            style="background-color: green; color: white; padding: 5px 10px; text-decoration: none; border-radius: 5px; text-align: center;">
            Approve
         </a>
 
-        <a href="http://125.22.172.147:3000/api/invoice/approveorrejectMail?originalUniqueId=${data.originalUniqueId}&status=Rejected&reason=rejectedFromMail&invoiceApprovedOrRejectedByUser=MD&invoiceUniqueNumber=${data.invoiceUniqueNumber}" 
+        <a href="${BASE_SERVER_URL}:${BASE_PORT}/api/invoice/approveorrejectMail?originalUniqueId=${data.originalUniqueId}&status=Rejected&reason=rejectedFromMail&invoiceApprovedOrRejectedByUser=MD&invoiceUniqueNumber=${data.invoiceUniqueNumber}" 
            style="background-color: red; color: white; padding: 5px 10px; text-decoration: none; border-radius: 5px; text-align: center;">
            Reject
         </a>
@@ -242,7 +243,7 @@ const approveInvoice = async (originalUniqueId) => {
     };
 
     try {
-        const response = await fetch(`http://125.22.172.147:3000/api/invoice/invoiceApprovedOrRejected`, {
+        const response = await fetch(`${BASE_SERVER_URL}:${BASE_PORT}/api/invoice/invoiceApprovedOrRejected`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(requestBody),
@@ -271,7 +272,7 @@ const rejectInvoice = async (originalUniqueId) => {
     };
 
     try {
-        const response = await fetch(`http://125.22.172.147:3000/api/invoice/invoiceApprovedOrRejected`, {
+        const response = await fetch(`${BASE_SERVER_URL}:${BASE_PORT}/api/invoice/invoiceApprovedOrRejected`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(requestBody),

@@ -1,7 +1,7 @@
 
 const{sendInvoiceDataToEmail} =require('./sendInvoiceToMail')
-const PORT = 3000;
-const SERVER_URL = '125.22.172.147';
+const { BASE_SERVER_URL, BASE_PORT } = require('../baseFile');
+
 
 
 
@@ -14,7 +14,7 @@ const send = async  (s) =>{
         };
 
         // Call the API
-        const response = await fetch(`http://125.22.172.147:3000/api/invoice/getAllInvoices`, {
+        const response = await fetch(`${BASE_SERVER_URL}:${BASE_PORT}/api/invoice/getAllInvoices`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

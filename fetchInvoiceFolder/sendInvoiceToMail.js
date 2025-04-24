@@ -94,7 +94,7 @@ const transporter = nodemailer.createTransport({
     port: 587,
     secure: false, // Use TLS
     auth: {
-        user: "noreply.itapps@hbl.in",
+        user: "sap.get@rithwikprojects.com",
         pass: "Happy#1968",
     },
 });
@@ -195,7 +195,7 @@ const sendInvoiceDataToEmail = async (toEmail, postTotalInvoiceList) => {
 
 
     const mailOptions = {
-        from: 'noreply.itapps@hbl.in',
+        from: 'sap.get@rithwikprojects.com',
         to: toEmail,  // Use the toEmail parameter instead of obj.userEmail
         subject: 'Invoice Pending Approval',
         html: `
@@ -294,7 +294,7 @@ const rejectInvoice = async (originalUniqueId) => {
 
 const sendEmails = async (recipient, subject, message) => {
     const mailOptions = {
-        from: 'noreply.itapps@hbl.in',
+        from: 'sap.get@rithwikprojects.com',
         to: 'sriramunaidug@sharviinfotech.com',
         subject: '',
         text: message,

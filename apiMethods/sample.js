@@ -20,7 +20,7 @@ const sendCredentials = async (req, res) => {
    const email=req.body.ZMAIL
    console.log("mailsent", email)
       const mailOptions = {
-        from: 'noreply.itapps@hbl.in',
+        from: 'sap.get@rithwikprojects.com',
         to: email,
         subject: 'Your Login Credentials',
         html: `
@@ -67,7 +67,7 @@ const sendCredentials = async (req, res) => {
     port: 587,
     secure: false, // Use TLS
     auth: {
-      user: "noreply.itapps@hbl.in",
+      user: "sap.get@rithwikprojects.com",
       pass: "Happy#1968",
     },
   });
@@ -75,7 +75,7 @@ const sendCredentials = async (req, res) => {
   // Helper function to send emails
   const sendEmails = async (recipient, subject, message) => {
     const mailOptions = {
-      from: 'noreply.itapps@hbl.in',
+      from: 'sap.get@rithwikprojects.com',
       to: 'sriramunaidug@sharviinfotech.com',
       subject: 'Calibration due date is pending',
       text: message,

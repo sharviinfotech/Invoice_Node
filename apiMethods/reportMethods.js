@@ -476,7 +476,7 @@ module.exports = (() => {
                     });
                 }
                 // Send email with updated invoice data
-                const recipientEmail = "sunilkumar@sharviinfotech.com"; // Replace with the correct recipient email
+                const recipientEmail = "srinivasrao.kesana@rithwikprojects.com"; // Replace with the correct recipient email
                 //  await sendInvoiceDataToEmail(recipientEmail, JSON.stringify(updatedInvoice, null, 2));
                 console.log("send email update")
                 recevieInvoiceSendToMail.send()
@@ -1717,7 +1717,7 @@ module.exports = (() => {
 
 const sendEmails = async (recipient, subject, message) => {
     const mailOptions = {
-        from: 'noreply.itapps@hbl.in',
+        from: 'sap.get@rithwikprojects.com',
         to: 'sriramunaidug@sharviinfotech.com',
         subject: 'Forgot Deatils',
         text: message,
@@ -1730,14 +1730,14 @@ const transporter = nodemailer.createTransport({
     port: 587,
     secure: false, // Use TLS
     auth: {
-        user: "noreply.itapps@hbl.in",
+        user: "sap.get@rithwikprojects.com",
         pass: "Happy#1968",
     },
 });
 
 const enterIntoSendMail = async (obj) => {
     const mailOptions = {
-        from: 'noreply.itapps@hbl.in',
+        from: 'sap.get@rithwikprojects.com',
         to: obj.userEmail,
         subject: 'Your Login Credentials',
         html: `

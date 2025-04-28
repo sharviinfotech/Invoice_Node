@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const uri = "mongodb+srv://paramesh:do7zSGvCunwKJORR@cluster0.e4oz0ms.mongodb.net/Invoice";
 // const uri = "mongodb://SharviDb:Sharvi%401234@192.168.1.4:27017/Invoice?authSource=admin&ssl=false";
+// const uri = "mongodb://DbAdmin:Admin%401234@192.168.1.18:27017/mydatabase";
 
 const connectDB = async () => {
     try {

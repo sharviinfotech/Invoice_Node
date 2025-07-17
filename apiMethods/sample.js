@@ -68,7 +68,7 @@ const sendCredentials = async (req, res) => {
     secure: false, // Use TLS
     auth: {
       user: "sap.get@rithwikprojects.com",
-      pass: "Happy#1968",
+      pass: "viwtglwaxmqippyf",
     },
   });
    
